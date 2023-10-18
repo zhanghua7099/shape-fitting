@@ -36,3 +36,6 @@ target_link_libraries(sphere_fitting_test ${PCL_LIBRARIES} fitting_library)
 
 add_executable(cylinder_real_data_test test/cylinder_real_data_test.cpp)
 target_link_libraries(cylinder_real_data_test ${PCL_LIBRARIES} fitting_library)
+
+add_executable(cylinder_single test/cylinder_single.cpp)
+target_link_libraries(cylinder_single ${PCL_LIBRARIES} fitting_library)
