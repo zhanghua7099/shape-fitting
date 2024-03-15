@@ -2,7 +2,7 @@
 CYLINDER_GENERATION_EXEC=$PWD"/build/cylinder_generation"
 
 # Number of iterations per noise and parameter
-ITERATIONS=1000
+ITERATIONS=100
 
 # Define considered cylinder heights
 HEIGHTS="1.0,2.0,3.0,4.0,5.0"
@@ -17,7 +17,7 @@ HEIGHT_SAMPLES=30
 ANGLE_SAMPLES=30
 
 ## declare an array variable
-declare -a arr=("occlusion" "outliers" "noise")
+declare -a arr=("noise")
 
 ## now loop through the above array
 for TEST_TYPE in "${arr[@]}"

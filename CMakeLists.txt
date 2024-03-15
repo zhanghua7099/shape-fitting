@@ -39,3 +39,6 @@ target_link_libraries(cylinder_real_data_test ${PCL_LIBRARIES} fitting_library)
 
 add_executable(cylinder_single test/cylinder_single.cpp)
 target_link_libraries(cylinder_single ${PCL_LIBRARIES} fitting_library)
+
+add_executable(cylinder_single_rabani test/cylinder_single_rabani.cpp)
+target_link_libraries(cylinder_single_rabani ${PCL_LIBRARIES} fitting_library)
