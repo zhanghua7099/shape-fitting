@@ -63,6 +63,9 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "variant": "cpp",
-        "bit": "cpp"
+        "bit": "cpp",
+        "forward_list": "cpp",
+        "future": "cpp",
+        "shared_mutex": "cpp"
     }
 }
