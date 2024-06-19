@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
   std::normal_distribution<> d2{0, 0.005};
   std::normal_distribution<> d3{1.0, 0.005};
 
-  std::string dataset_dir = std::string(argv[1]);
+  std::string dataset_dir = "./dataset/cylinder_occlusion";
   std::cout << "dataset_dir: " << dataset_dir << std::endl;
 
   std::string ground_truth_dir = dataset_dir + "/ground_truth/";
@@ -58,29 +58,30 @@ int main(int argc, char** argv) {
   createDirectory(ground_truth_dir);
   createDirectory(point_clouds_dir);
 
-  unsigned int iterations = atoi(argv[2]);
+  unsigned int iterations = 100;
   std::cout << "iterations: " << iterations << std::endl;
 
-  static std::string heights_ = std::string(argv[3]);
+  static std::string heights_ = "1.0";
   std::cout << "heights: " << heights_ << std::endl;
 
-  static std::string radii_ = std::string(argv[4]);
+  static std::string radii_ = "0.3";
   std::cout << "radii: " << radii_ << std::endl;
 
-  static std::string noise_levels_ = std::string(argv[5]);
+  static std::string noise_levels_ = "0.01";
   std::cout << "noise: " << noise_levels_ << std::endl;
 
-  static std::string outlier_levels_ = std::string(argv[6]);
+  static std::string outlier_levels_ = "0";
   std::cout << "outliers: " << outlier_levels_ << std::endl;
 
-  static std::string occlusion_levels_ = std::string(argv[7]);
+  // OCCLUSION_LEVELS="0.00,0.10,0.20,0.30,0.40,0.50,0.60,0.70,0.80,0.90"
+  static std::string occlusion_levels_ = "0";
   std::cout << "occlusion_levels: " << occlusion_levels_ << std::endl;
 
-  static unsigned int height_sampling_density = atoi(argv[8]);
+  static unsigned int height_sampling_density = 30;
   std::cout << "height_sampling_density: " << height_sampling_density
             << std::endl;
 
-  static unsigned int angle_sampling_density = atoi(argv[9]);
+  static unsigned int angle_sampling_density = 30;
   std::cout << "angle_sampling_density: " << angle_sampling_density
             << std::endl;
 
@@ -126,17 +127,21 @@ int main(int argc, char** argv) {
     if (ss_.peek() == ',') ss_.ignore();
   }
 
+  // 没啥用。主要可视化输出到哪了。
   unsigned int total_iterations = iterations * outlier_levels.size() *
                                   occlusion_levels.size() * heights.size() *
                                   radii.size();
+  
   // generate point clouds with different radius and heights at random poses
   for (unsigned int i = 0; i < iterations; ++i) {
     for (unsigned int o = 0; o < outlier_levels.size(); ++o) {
       for (unsigned int occ = 0; occ < occlusion_levels.size(); ++occ) {
         for (unsigned int h_ = 0; h_ < heights.size(); ++h_) {
           for (unsigned int r_ = 0; r_ < radii.size(); ++r_) {
+            
             double height = heights[h_];
             double radius = radii[r_];
+            
             // Generate cylinder according to parameters
             pcl::PointCloud<pcl::PointXYZ> cloud;
             cloud.header.frame_id = "world";
@@ -145,6 +150,7 @@ int main(int argc, char** argv) {
             double height_step = fabs(height / height_sampling_density);
             unsigned int angle_sampling_density_final =
                 round((1.0 - occlusion_levels[occ]) * angle_sampling_density);
+            
             for (unsigned int a = 0; a < angle_sampling_density_final; ++a) {
               double x, y, z;
               x = cos(angle_step * a) * fabs(radius);

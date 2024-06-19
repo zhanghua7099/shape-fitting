@@ -25,6 +25,10 @@ target_link_libraries (fitting_library ${PCL_LIBRARIES})
 add_executable(cylinder_generation test/cylinder_generation.cpp)
 target_link_libraries(cylinder_generation ${PCL_LIBRARIES})
 
+# only generate occlusion test
+add_executable(cylinder_generation_occlusion test/cylinder_generation_occlusion.cpp)
+target_link_libraries(cylinder_generation_occlusion ${PCL_LIBRARIES})
+
 add_executable(sphere_generation test/sphere_generation.cpp)
 target_link_libraries(sphere_generation ${PCL_LIBRARIES})
 
@@ -37,8 +41,8 @@ target_link_libraries(sphere_fitting_test ${PCL_LIBRARIES} fitting_library)
 add_executable(cylinder_real_data_test test/cylinder_real_data_test.cpp)
 target_link_libraries(cylinder_real_data_test ${PCL_LIBRARIES} fitting_library)
 
-add_executable(cylinder_single test/cylinder_single.cpp)
-target_link_libraries(cylinder_single ${PCL_LIBRARIES} fitting_library)
+add_executable(cylinder_single_Figueiredo test/cylinder_single_Figueiredo.cpp)
+target_link_libraries(cylinder_single_Figueiredo ${PCL_LIBRARIES} fitting_library)
 
 add_executable(cylinder_single_rabani test/cylinder_single_rabani.cpp)
 target_link_libraries(cylinder_single_rabani ${PCL_LIBRARIES} fitting_library)

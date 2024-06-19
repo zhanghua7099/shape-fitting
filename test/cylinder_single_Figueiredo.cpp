@@ -13,6 +13,7 @@ typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
 
 pcl::NormalEstimation<PointT, pcl::Normal> ne;
 pcl::search::KdTree<PointT>::Ptr tree;
+// ?????????使用自己的数据，中心不在圆柱轴附近就直接挂掉?????????
 
 int main(int argc, char** argv) {
   // set the pcd path
@@ -30,7 +31,7 @@ int main(int argc, char** argv) {
   float min_radius = 0.25;
   float max_radius = 0.35;
   int mode = 1;
-  bool soft_voting = true;  // the setting from paper is True.
+  bool soft_voting = true;  // paper is true!
   bool visualize = true;
 
   boost::shared_ptr<VisualizeFittingData> visualizer;
@@ -53,20 +54,50 @@ int main(int argc, char** argv) {
   GaussianSphere gaussian_sphere(gmm, gaussian_sphere_points_num,
                                  orientation_accumulators_num);
 
+  // Gaussian Sphere Top Biased
+  std::vector<double> weights_biased;
+  std::vector<Eigen::Matrix<double, 3, 1> > means_biased;
+  std::vector<Eigen::Matrix<double, 3, 1> > std_devs_biased;
+  weights_biased.push_back(1.0);
+  Eigen::Matrix<double, 3, 1> mean_eigen_biased(0, 0, 1.0);
+  means_biased.push_back(mean_eigen_biased);
+  Eigen::Matrix<double, 3, 1> std_dev_eigen_biased(0.5, 0.5, 0.5);
+  std_devs_biased.push_back(std_dev_eigen_biased);
 
-  // HOUGH RABANI
+  GaussianMixtureModel gmm_biased(weights_biased, means_biased,
+                                  std_devs_biased);
+  GaussianSphere gaussian_sphere_biased(gmm_biased, gaussian_sphere_points_num,
+                                        orientation_accumulators_num);
+
+  // Gaussian Sphere Strong Top Biased
+  std::vector<double> weights_super_biased;
+  std::vector<Eigen::Matrix<double, 3, 1> > means_super_biased;
+  std::vector<Eigen::Matrix<double, 3, 1> > std_devs_super_biased;
+  weights_super_biased.push_back(1.0);
+  Eigen::Matrix<double, 3, 1> mean_eigen_super_biased(0, 0, 1.0);
+  means_super_biased.push_back(mean_eigen_super_biased);
+  Eigen::Matrix<double, 3, 1> std_dev_eigen_super_biased(0.05, 0.05, 0.05);
+  std_devs_super_biased.push_back(std_dev_eigen_super_biased);
+
+  GaussianMixtureModel gmm_super_biased(
+      weights_super_biased, means_super_biased, std_devs_super_biased);
+  GaussianSphere gaussian_sphere_super_biased(gmm_super_biased,
+                                              gaussian_sphere_points_num,
+                                              orientation_accumulators_num);
+
+  // // HOUGH HYBRID SUPER BIASED (soft-voting)  
   boost::shared_ptr<CylinderFittingHough> cylinder_fitting(
       new CylinderFittingHough(
-          gaussian_sphere, (unsigned int)angle_bins, (unsigned int)radius_bins,
-          (unsigned int)position_bins, (float)min_radius, (float)max_radius,
-          (float)accumulator_peak_threshold, CylinderFittingHough::NORMAL,
-          false, false));
+          gaussian_sphere_super_biased, (unsigned int)angle_bins,
+          (unsigned int)radius_bins, (unsigned int)position_bins,
+          (float)min_radius, (float)max_radius,
+          (float)accumulator_peak_threshold, CylinderFittingHough::HYBRID,
+          false, true));
 
   pcl::IntegralImageNormalEstimation<pcl::PointXYZ, pcl::Normal> ne_org;
   ne_org.setNormalEstimationMethod(ne_org.AVERAGE_3D_GRADIENT);
   ne_org.setMaxDepthChangeFactor(0.02f);
   ne_org.setNormalSmoothingSize(10.0f);
-
 
   pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne;
   pcl::search::KdTree<pcl::PointXYZ>::Ptr tree(

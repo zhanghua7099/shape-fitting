@@ -35,7 +35,7 @@ for test_type in test_types:
 	current_file = os.path.abspath(os.path.dirname(__file__)+"/..")
 	home = os.path.join(current_file, 'dataset')
 
-
+	# 这里没有画ransac的表现！！！
 	total_algorithms=4
 	algorithms=[0,1,2,3]
 	heights=5
