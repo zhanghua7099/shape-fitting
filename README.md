@@ -2,7 +2,7 @@
 
 ## Installing
 ```
-pip install ./cy_fit_hough
+pip install git+https://github.com/zhanghua7099/shape-fitting.git@pybind
 ```
 
 ## Generating test dataset (ground truth + point clouds) 
