@@ -1,8 +1,8 @@
-# shape fitting using PCL
+# shape fitting using PCL (Pybind Version)
 
 ## Installing
 ```
-mkdir build && cd build && cmake .. && make
+pip install ./cy_fit_hough
 ```
 
 ## Generating test dataset (ground truth + point clouds) 
